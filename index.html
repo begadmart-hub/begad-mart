@@ -95,11 +95,13 @@
     <button onclick="checkout()" style="padding: 15px 40px; background: #ff6f00; color: white; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer;">Order Confirm করুন</button>
   </div>
 </div>
+    
     <a href="#seller" style="margin: 0 18px; text-decoration: none; color: #0d47a1; font-weight: bold; font-size: 16px;">Seller Login</a>
-    <!-- 3.6 SELLER LOGIN + ADMIN PANEL -->
+    
+<!-- 3.6 SELLER LOGIN + ADMIN PANEL -->
 <div id="seller" style="background: #e8f5e9; padding: 50px 20px; min-height: 500px;">
-  <h1 style="text-align: center; color: #2e7d32;">Seller Panel</h1>
-  
+  <h1 style="text-align: center; color: #2e7d32;">Seller Dashboard</h1>
+
   <!-- LOGIN FORM -->
   <div id="login-form" style="max-width: 400px; margin: 20px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
     <h2 style="text-align: center; color: #0d47a1;">Login করুন</h2>
@@ -109,19 +111,41 @@
   </div>
 
   <!-- ADMIN PANEL -->
-  <div id="admin-panel" style="display: none; max-width: 900px; margin: 20px auto;">
-    
-    <!-- ADD PRODUCT FORM -->
+  <div id="admin-panel" style="display: none; max-width: 1000px; margin: 20px auto;">
+
+    <!-- DASHBOARD STATS -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px;">
+      <div style="background: white; padding: 20px; border-radius: 10px; text-align: center; border-left: 5px solid #ff6f00;">
+        <h3 style="color: #666; font-size: 14px;">মোট Product</h3>
+        <p id="stat-count" style="font-size: 28px; font-weight: bold; color: #0d47a1; margin: 5px 0;">0</p>
+      </div>
+      <div style="background: white; padding: 20px; border-radius: 10px; text-align: center; border-left: 5px solid #2e7d32;">
+        <h3 style="color: #666; font-size: 14px;">মোট Stock Value</h3>
+        <p id="stat-value" style="font-size: 28px; font-weight: bold; color: #2e7d32; margin: 5px 0;">₹0</p>
+      </div>
+      <div style="background: white; padding: 20px; border-radius: 10px; text-align: center; border-left: 5px solid #0d47a1;">
+        <h3 style="color: #666; font-size: 14px;">Currency</h3>
+        <select id="currency-select" onchange="changeCurrency()" style="font-size: 18px; padding: 5px; border: 1px solid #ccc; border-radius: 5px;">
+          <option value="₹">₹ INR</option>
+          <option value="$">$ USD</option>
+          <option value="€">€ EUR</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- ADD/EDIT PRODUCT FORM -->
     <div style="background: white; padding: 25px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
-      <h2 style="color: #2e7d32;">নতুন Product Add করুন</h2>
+      <h2 style="color: #2e7d32;" id="form-title">নতুন Product Add করুন</h2>
+      <input type="hidden" id="p-edit-id">
       <input type="text" id="p-name" placeholder="Product নাম" style="width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 6px;">
-      <input type="number" id="p-price" placeholder="দাম ₹" style="width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 6px;">
+      <input type="number" id="p-price" placeholder="দাম" style="width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 6px;">
       <input type="text" id="p-image" placeholder="ছবির Link" style="width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 6px;">
-      <button onclick="addProduct()" style="padding: 12px 25px; background: #ff6f00; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Product Add করুন</button>
+      <button onclick="saveProduct()" id="save-btn" style="padding: 12px 25px; background: #ff6f00; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Product Add করুন</button>
+      <button onclick="resetForm()" style="padding: 12px 25px; background: #757575; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Cancel</button>
       <button onclick="sellerLogout()" style="padding: 12px 25px; background: #d32f2f; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; float: right;">Logout</button>
     </div>
 
-    <!-- PRODUCT LIST -->
+    <!-- PRODUCT LIST WITH EDIT -->
     <div style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
       <h2 style="color: #0d47a1;">সকল Product</h2>
       <div id="admin-product-list"></div>
@@ -129,6 +153,7 @@
   </div>
 </div>
 
+    
   <!-- 4. FOOTER - UPDATED -->
   <div id="contact" style="background: linear-gradient(135deg, #0d47a1 0%, #1565c0 100%); color: white; text-align: center; padding: 40px 20px; margin-top: 50px; position: relative; overflow: hidden;">
     <div style="position: absolute; top: 10px; left: 10%; font-size: 40px; opacity: 0.1;">🪷</div>
@@ -144,12 +169,9 @@
   </div>
     
 <script>
-    // Load products from memory or default
+    let currency = localStorage.getItem('besmart_currency') || '₹';
     let products = JSON.parse(localStorage.getItem('besmart_products')) || [
-      { id: 1, name: "Aamer Achar - Mango Pickle", price: 180, image: "https://via.placeholder.com/260x200/f8bbd0/0d47a1?text=Mango+Pickle" },
-      { id: 2, name: "Aamer Jam - Mango Jam", price: 220, image: "https://via.placeholder.com/260x200/f8bbd0/0d47a1?text=Mango+Jam" },
-      { id: 3, name: "Amloki Morobba - Amla Murabba", price: 250, image: "https://via.placeholder.com/260x200/f8bbd0/0d47a1?text=Amla+Murabba" },
-      { id: 4, name: "Amloki Candy - Amla Candy", price: 150, image: "https://via.placeholder.com/260x200/f8bbd0/0d47a1?text=Amla+Candy" }
+      { id: 1, name: "Aamer Achar - Mango Pickle", price: 180, image: "https://via.placeholder.com/260x200/f8bbd0/0d47a1?text=Mango+Pickle" }
     ];
 
     const grid = document.getElementById('product-grid');
@@ -158,32 +180,29 @@
       products.forEach(p => {
         grid.innerHTML += `
           <div class="card">
-            <img src="${p.image}" alt="${p.name}">
+            <img src="${p.image}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/260x200/cccccc/666?text=No+Image'">
             <h3>${p.name}</h3>
-            <p class="price">₹${p.price}</p>
-            <button class="btn" onclick="addToCart(${p.id}, '${p.name}', ${p.price})">Add to Cart</button>
+            <p class="price">${currency}${p.price}</p>
+            <button class="btn" onclick="addToCart(${p.id}, \`${p.name}\`, ${p.price})">Add to Cart</button>
           </div>
         `;
       });
+      updateDashboardStats();
       renderAdminList();
     }
     renderProducts();
 
     let cart = [];
-
     function addToCart(id, name, price) {
       const existing = cart.find(item => item.id === id);
-      if(existing) { existing.qty += 1; } 
-      else { cart.push({id, name, price, qty: 1}); }
+      if(existing) { existing.qty += 1; } else { cart.push({id, name, price, qty: 1}); }
       updateCartCount();
       alert(name + " কার্টে যোগ হয়েছে!");
     }
-
     function updateCartCount() {
       let total = cart.reduce((sum, item) => sum + item.qty, 0);
       document.getElementById('cart-count').innerText = total;
     }
-
     function showCart() {
       const cartDiv = document.getElementById('cart-items');
       const totalDiv = document.getElementById('cart-total');
@@ -196,72 +215,104 @@
         total += item.price * item.qty;
         html += `<div style="display: flex; justify-content: space-between; padding: 15px; border-bottom: 1px solid #f8bbd0;">
           <span style="color: #0d47a1; font-weight: bold;">${item.name} x ${item.qty}</span>
-          <span style="color: #ff6f00; font-weight: bold;">₹${item.price * item.qty}</span>
+          <span style="color: #ff6f00; font-weight: bold;">${currency}${item.price * item.qty}</span>
         </div>`;
       });
       cartDiv.innerHTML = html;
-      totalDiv.innerHTML = 'মোট: ₹' + total;
+      totalDiv.innerHTML = 'মোট: ' + currency + total;
     }
-
     function checkout() {
       if(cart.length === 0) { alert('আপনার কার্ট খালি!'); return; }
       alert('ধন্যবাদ! আপনার অর্ডার নেওয়া হয়েছে। আমরা শীঘ্রই যোগাযোগ করবো।');
       cart = []; updateCartCount(); showCart();
     }
-
     document.querySelector('a[href="#cart"]').addEventListener('click', showCart);
 
     // ===== SELLER SYSTEM =====
-    const SELLER_PASSWORD = "besmart123"; // Password এখান থেকে Change করতে পারবেন
-
+    const SELLER_PASSWORD = "besmart123";
     function sellerLogin() {
       const pass = document.getElementById('seller-pass').value;
       if(pass === SELLER_PASSWORD) {
         document.getElementById('login-form').style.display = 'none';
         document.getElementById('admin-panel').style.display = 'block';
+        document.getElementById('currency-select').value = currency;
         renderAdminList();
-      } else {
-        alert('ভুল Password!');
-      }
+      } else { alert('ভুল Password!'); }
     }
-
     function sellerLogout() {
       document.getElementById('login-form').style.display = 'block';
       document.getElementById('admin-panel').style.display = 'none';
       document.getElementById('seller-pass').value = '';
     }
+    function changeCurrency() {
+      currency = document.getElementById('currency-select').value;
+      localStorage.setItem('besmart_currency', currency);
+      renderProducts();
+    }
+    function updateDashboardStats() {
+      document.getElementById('stat-count').innerText = products.length;
+      let totalValue = products.reduce((sum, p) => sum + p.price, 0);
+      document.getElementById('stat-value').innerText = currency + totalValue;
+    }
 
-    function addProduct() {
+    function saveProduct() {
+      const id = document.getElementById('p-edit-id').value;
       const name = document.getElementById('p-name').value;
       const price = parseFloat(document.getElementById('p-price').value);
       const image = document.getElementById('p-image').value;
-      if(!name || !price || !image) { alert('সব ঘর Fill করুন'); return; }
-      
-      const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
-      products.push({id: newId, name, price, image});
+      if(!name ||!price ||!image) { alert('সব ঘর Fill করুন'); return; }
+
+      if(id) { // Edit
+        const index = products.findIndex(p => p.id == id);
+        products[index] = {id: parseInt(id), name, price, image};
+      } else { // Add
+        const newId = products.length > 0? Math.max(...products.map(p => p.id)) + 1 : 1;
+        products.push({id: newId, name, price, image});
+      }
       localStorage.setItem('besmart_products', JSON.stringify(products));
-      renderProducts();
-      document.getElementById('p-name').value = '';
-      document.getElementById('p-price').value = '';
-      document.getElementById('p-image').value = '';
-      alert('Product Add হয়েছে!');
+      renderProducts(); resetForm(); alert('Product Save হয়েছে!');
+    }
+
+    function editProduct(id) {
+      const p = products.find(p => p.id == id);
+      document.getElementById('p-edit-id').value = p.id;
+      document.getElementById('p-name').value = p.name;
+      document.getElementById('p-price').value = p.price;
+      document.getElementById('p-image').value = p.image;
+      document.getElementById('form-title').innerText = 'Product Edit করুন';
+      document.getElementById('save-btn').innerText = 'Update করুন';
+      window.scrollTo(0, document.getElementById('seller').offsetTop);
     }
 
     function deleteProduct(id) {
       if(confirm('Product Delete করবেন?')) {
-        products = products.filter(p => p.id !== id);
+        products = products.filter(p => p.id!== id);
         localStorage.setItem('besmart_products', JSON.stringify(products));
         renderProducts();
       }
+    }
+    function resetForm() {
+      document.getElementById('p-edit-id').value = '';
+      document.getElementById('p-name').value = '';
+      document.getElementById('p-price').value = '';
+      document.getElementById('p-image').value = '';
+      document.getElementById('form-title').innerText = 'নতুন Product Add করুন';
+      document.getElementById('save-btn').innerText = 'Product Add করুন';
     }
 
     function renderAdminList() {
       const listDiv = document.getElementById('admin-product-list');
       let html = '';
       products.forEach(p => {
-        html += `<div style="display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #eee;">
-          <span>${p.name} - ₹${p.price}</span>
-          <button onclick="deleteProduct(${p.id})" style="background: #d32f2f; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">Delete</button>
+        html += `<div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #eee;">
+          <div>
+            <b>${p.name}</b><br>
+            <span style="color: #ff6f00;">${currency}${p.price}</span>
+          </div>
+          <div>
+            <button onclick="editProduct(${p.id})" style="background: #0d47a1; color: white; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; margin-right: 5px;">Edit</button>
+            <button onclick="deleteProduct(${p.id})" style="background: #d32f2f; color: white; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer;">Delete</button>
+          </div>
         </div>`;
       });
       listDiv.innerHTML = html;
