@@ -1,59 +1,34 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-  <meta charset="UTF-8">
-  <title>BEGAD MART</title>
-  <style>
-    body { font-family: Arial; padding: 20px; background: #f5f5f5; margin: 0; }
-    h1 { text-align: center; color: #2e7d32; font-size: 40px; }
-    .subtitle { text-align: center; color: #555; font-size: 18px; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 30px; }
-    .card { background: white; border-radius: 10px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-    .card img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; }
-    .card h3 { margin: 10px 0 5px 0; }
-    .price { font-size: 18px; font-weight: bold; color: #2e7d32; }
-    .btn { width: 100%; padding: 10px; background: #2e7d32; color: white; border: none; border-radius: 5px; cursor: pointer; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BEGAD SHOPPING MART</title> <!-- এখানে Browser এর নাম -->
 </head>
 <body>
-  <h1>BEGAD MART</h1>
-  <p class="subtitle">প্রাকৃতিক ও ঘরোয়া খাদ্যপণ্য</p>
+
+<!-- WELCOME SECTION -->
+<div style="background: linear-gradient(to right, #e8f5e9, #f1f8e9); padding: 60px 20px; text-align: center; border-bottom: 3px solid green;">
   
-  <div class="grid" id="product-grid"></div>
-  <nav style="background:#2d5016; padding:15px; text-align:center; position:sticky; top:0; z-index:100;">
-  <a href="#" style="color:white; margin:0 15px; text-decoration:none; font-weight:bold;">Home</a>
-  <a href="#product-grid" style="color:white; margin:0 15px; text-decoration:none; font-weight:bold;">Products</a>
-  <a href="#about" style="color:white; margin:0 15px; text-decoration:none; font-weight:bold;">About Us</a>
-  <a href="#contact" style="color:white; margin:0 15px; text-decoration:none; font-weight:bold;">Contact</a>
-</nav>
+  <h1 style="color: #2e7d32; font-size: 36px; margin-bottom: 10px;">BEGAD SHOPPING MART এ আপনাকে স্বাগতম 🙏</h1>
+  
+  <h2 style="color: #2e7d32; font-size: 24px; margin-bottom: 15px;">BEGAD SHOPPING MART</h2>
 
-  <script>
-    const products = [
-      { id: 1, name: "Aamer Achar - Mango Pickle", price: 180, image: "https://i.imgur.com/abc123.jpg" },
-      { id: 2, name: "Aamer Jam - Mango Jam", price: 220, image: "https://i.imgur.com/abc123.jpg" },
-      { id: 3, name: "Amloki Morobba - Amla Murabba", price: 250, image: "https://i.imgur.com/abc123.jpg" },
-      { id: 4, name: "Amloki Candy - Amla Candy", price: 150, image: "https://i.imgur.com/abc123.jpg" },
-      { id: 5, name: "Karamcha Achar - Karonda Pickle", price: 160, image: "https://i.imgur.com/abc123.jpg" },
-      { id: 6, name: "Lebu Achar - Lemon Pickle", price: 140, image: "https://i.imgur.com/abc123.jpg" },
-      { id: 7, name: "Kamranga Jam - Starfruit Jam", price: 210, image: "https://i.imgur.com/abc123.jpg" },
-      { id: 8, name: "Gota Masala - Whole Spices", price: 120, image: "https://i.imgur.com/abc123.jpg" },
-      { id: 9, name: "Guro Masala - Ground Spices", price: 100, image: "https://i.imgur.com/abc123.jpg" },
-      { id: 10, name: "Herbal Panio - Lemon Mint Drink", price: 80, image: "https://i.imgur.com/abc123.jpg" },
-      { id: 11, name: "Holud Guro - Turmeric Powder", price: 70, image: "https://i.imgur.com/abc123.jpg" },
-      { id: 12, name: "Lal Mirich Guro - Red Chilli Powder", price: 90, image: "https://i.imgur.com/abc123.jpg" }
-    ];
+  <p style="color: #555; font-size: 18px; max-width: 700px; margin: 0 auto;">
+    BE S-MART নিয়ে এসেছে আপনার নিত্যদিনের প্রয়োজনীয় সেরা মানের পণ্য। 
+    ঘরে বসে অর্ডার করুন, দ্রুত ডেলিভারি পান। বিশ্বাস আর সেবাই আমাদের লক্ষ্য।
+  </p>
 
-    const grid = document.getElementById('product-grid');
-    products.forEach(p => {
-      grid.innerHTML += `
-        <div class="card">
-          <img src="${p.image}" alt="${p.name}">
-          <h3>${p.name}</h3>
-          <p class="price">₹${p.price}</p>
-          <button class="btn">Add to Cart</button>
-        </div>
-      `;
-    });
-  </script>
+  <div style="margin-top: 30px;">
+    <a href="#products" style="padding: 14px 28px; background: #2e7d32; color: white; text-decoration: none; border-radius: 8px; font-size: 16px; font-weight: bold;">এখনই কেনাকাটা করুন</a>
+    
+    <a href="#seller" style="padding: 14px 28px; background: #ff9800; color: white; text-decoration: none; border-radius: 8px; font-size: 16px; font-weight: bold; margin-left: 15px;">Seller Login</a>
+  </div>
+
+</div>
+<!-- WELCOME SECTION END -->
+
+<!-- এখান থেকে আপনার পুরোনো Menu এবং Product এর Code শুরু হবে -->
+
 </body>
 </html>
