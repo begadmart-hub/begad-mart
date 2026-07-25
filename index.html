@@ -95,6 +95,40 @@
     <button onclick="checkout()" style="padding: 15px 40px; background: #ff6f00; color: white; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer;">Order Confirm করুন</button>
   </div>
 </div>
+    <a href="#seller" style="margin: 0 18px; text-decoration: none; color: #0d47a1; font-weight: bold; font-size: 16px;">Seller Login</a>
+    <!-- 3.6 SELLER LOGIN + ADMIN PANEL -->
+<div id="seller" style="background: #e8f5e9; padding: 50px 20px; min-height: 500px;">
+  <h1 style="text-align: center; color: #2e7d32;">Seller Panel</h1>
+  
+  <!-- LOGIN FORM -->
+  <div id="login-form" style="max-width: 400px; margin: 20px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+    <h2 style="text-align: center; color: #0d47a1;">Login করুন</h2>
+    <input type="password" id="seller-pass" placeholder="Password দিন" style="width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #f8bbd0; border-radius: 8px; font-size: 16px;">
+    <button onclick="sellerLogin()" style="width: 100%; padding: 12px; background: #2e7d32; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer;">Login</button>
+    <p style="text-align: center; font-size: 12px; color: #666; margin-top: 10px;">Default Password: <b>besmart123</b></p>
+  </div>
+
+  <!-- ADMIN PANEL -->
+  <div id="admin-panel" style="display: none; max-width: 900px; margin: 20px auto;">
+    
+    <!-- ADD PRODUCT FORM -->
+    <div style="background: white; padding: 25px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+      <h2 style="color: #2e7d32;">নতুন Product Add করুন</h2>
+      <input type="text" id="p-name" placeholder="Product নাম" style="width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 6px;">
+      <input type="number" id="p-price" placeholder="দাম ₹" style="width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 6px;">
+      <input type="text" id="p-image" placeholder="ছবির Link" style="width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 6px;">
+      <button onclick="addProduct()" style="padding: 12px 25px; background: #ff6f00; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Product Add করুন</button>
+      <button onclick="sellerLogout()" style="padding: 12px 25px; background: #d32f2f; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; float: right;">Logout</button>
+    </div>
+
+    <!-- PRODUCT LIST -->
+    <div style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+      <h2 style="color: #0d47a1;">সকল Product</h2>
+      <div id="admin-product-list"></div>
+    </div>
+  </div>
+</div>
+
   <!-- 4. FOOTER - UPDATED -->
   <div id="contact" style="background: linear-gradient(135deg, #0d47a1 0%, #1565c0 100%); color: white; text-align: center; padding: 40px 20px; margin-top: 50px; position: relative; overflow: hidden;">
     <div style="position: absolute; top: 10px; left: 10%; font-size: 40px; opacity: 0.1;">🪷</div>
@@ -108,43 +142,39 @@
       <p style="font-size: 14px; color: #ffcc80;">© 2026 BE S-MART. All Rights Reserved. | বিশ্বাস আর সেবাই আমাদের লক্ষ্য</p>
     </div>
   </div>
+    
 <script>
-    const products = [
+    // Load products from memory or default
+    let products = JSON.parse(localStorage.getItem('besmart_products')) || [
       { id: 1, name: "Aamer Achar - Mango Pickle", price: 180, image: "https://via.placeholder.com/260x200/f8bbd0/0d47a1?text=Mango+Pickle" },
       { id: 2, name: "Aamer Jam - Mango Jam", price: 220, image: "https://via.placeholder.com/260x200/f8bbd0/0d47a1?text=Mango+Jam" },
       { id: 3, name: "Amloki Morobba - Amla Murabba", price: 250, image: "https://via.placeholder.com/260x200/f8bbd0/0d47a1?text=Amla+Murabba" },
-      { id: 4, name: "Amloki Candy - Amla Candy", price: 150, image: "https://via.placeholder.com/260x200/f8bbd0/0d47a1?text=Amla+Candy" },
-      { id: 5, name: "Karamcha Achar - Karonda Pickle", price: 160, image: "https://via.placeholder.com/260x200/f8bbd0/0d47a1?text=Karonda+Pickle" },
-      { id: 6, name: "Lebu Achar - Lemon Pickle", price: 140, image: "https://via.placeholder.com/260x200/f8bbd0/0d47a1?text=Lemon+Pickle" },
-      { id: 7, name: "Kamranga Jam - Starfruit Jam", price: 210, image: "https://via.placeholder.com/260x200/f8bbd0/0d47a1?text=Starfruit+Jam" },
-      { id: 8, name: "Gota Masala - Whole Spices", price: 120, image: "https://via.placeholder.com/260x200/f8bbd0/0d47a1?text=Whole+Spices" },
-      { id: 9, name: "Guro Masala - Ground Spices", price: 100, image: "https://via.placeholder.com/260x200/f8bbd0/0d47a1?text=Ground+Spices" },
-      { id: 10, name: "Herbal Panio - Lemon Mint Drink", price: 80, image: "https://via.placeholder.com/260x200/f8bbd0/0d47a1?text=Lemon+Mint" },
-      { id: 11, name: "Holud Guro - Turmeric Powder", price: 70, image: "https://via.placeholder.com/260x200/f8bbd0/0d47a1?text=Turmeric" },
-      { id: 12, name: "Lal Mirich Guro - Red Chilli Powder", price: 90, image: "https://via.placeholder.com/260x200/f8bbd0/0d47a1?text=Chilli+Powder" }
+      { id: 4, name: "Amloki Candy - Amla Candy", price: 150, image: "https://via.placeholder.com/260x200/f8bbd0/0d47a1?text=Amla+Candy" }
     ];
 
     const grid = document.getElementById('product-grid');
-    products.forEach(p => {
-      grid.innerHTML += `
-        <div class="card">
-          <img src="${p.image}" alt="${p.name}">
-          <h3>${p.name}</h3>
-          <p class="price">₹${p.price}</p>
-          <button class="btn" onclick="addToCart(${p.id}, '${p.name}', ${p.price})">Add to Cart</button>
-        </div>
-      `;
-    });
+    function renderProducts() {
+      grid.innerHTML = '';
+      products.forEach(p => {
+        grid.innerHTML += `
+          <div class="card">
+            <img src="${p.image}" alt="${p.name}">
+            <h3>${p.name}</h3>
+            <p class="price">₹${p.price}</p>
+            <button class="btn" onclick="addToCart(${p.id}, '${p.name}', ${p.price})">Add to Cart</button>
+          </div>
+        `;
+      });
+      renderAdminList();
+    }
+    renderProducts();
 
     let cart = [];
 
     function addToCart(id, name, price) {
       const existing = cart.find(item => item.id === id);
-      if(existing) {
-        existing.qty += 1;
-      } else {
-        cart.push({id, name, price, qty: 1});
-      }
+      if(existing) { existing.qty += 1; } 
+      else { cart.push({id, name, price, qty: 1}); }
       updateCartCount();
       alert(name + " কার্টে যোগ হয়েছে!");
     }
@@ -157,23 +187,17 @@
     function showCart() {
       const cartDiv = document.getElementById('cart-items');
       const totalDiv = document.getElementById('cart-total');
-      
       if(cart.length === 0) {
         cartDiv.innerHTML = '<p style="text-align: center; color: #0d47a1;">আপনার কার্ট খালি আছে</p>';
-        totalDiv.innerHTML = '';
-        return;
+        totalDiv.innerHTML = ''; return;
       }
-      
-      let html = '';
-      let total = 0;
+      let html = ''; let total = 0;
       cart.forEach(item => {
         total += item.price * item.qty;
-        html += `
-          <div style="display: flex; justify-content: space-between; padding: 15px; border-bottom: 1px solid #f8bbd0;">
-            <span style="color: #0d47a1; font-weight: bold;">${item.name} x ${item.qty}</span>
-            <span style="color: #ff6f00; font-weight: bold;">₹${item.price * item.qty}</span>
-          </div>
-        `;
+        html += `<div style="display: flex; justify-content: space-between; padding: 15px; border-bottom: 1px solid #f8bbd0;">
+          <span style="color: #0d47a1; font-weight: bold;">${item.name} x ${item.qty}</span>
+          <span style="color: #ff6f00; font-weight: bold;">₹${item.price * item.qty}</span>
+        </div>`;
       });
       cartDiv.innerHTML = html;
       totalDiv.innerHTML = 'মোট: ₹' + total;
@@ -182,14 +206,64 @@
     function checkout() {
       if(cart.length === 0) { alert('আপনার কার্ট খালি!'); return; }
       alert('ধন্যবাদ! আপনার অর্ডার নেওয়া হয়েছে। আমরা শীঘ্রই যোগাযোগ করবো।');
-      cart = [];
-      updateCartCount();
-      showCart();
+      cart = []; updateCartCount(); showCart();
     }
 
     document.querySelector('a[href="#cart"]').addEventListener('click', showCart);
+
+    // ===== SELLER SYSTEM =====
+    const SELLER_PASSWORD = "besmart123"; // Password এখান থেকে Change করতে পারবেন
+
+    function sellerLogin() {
+      const pass = document.getElementById('seller-pass').value;
+      if(pass === SELLER_PASSWORD) {
+        document.getElementById('login-form').style.display = 'none';
+        document.getElementById('admin-panel').style.display = 'block';
+        renderAdminList();
+      } else {
+        alert('ভুল Password!');
+      }
+    }
+
+    function sellerLogout() {
+      document.getElementById('login-form').style.display = 'block';
+      document.getElementById('admin-panel').style.display = 'none';
+      document.getElementById('seller-pass').value = '';
+    }
+
+    function addProduct() {
+      const name = document.getElementById('p-name').value;
+      const price = parseFloat(document.getElementById('p-price').value);
+      const image = document.getElementById('p-image').value;
+      if(!name || !price || !image) { alert('সব ঘর Fill করুন'); return; }
+      
+      const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
+      products.push({id: newId, name, price, image});
+      localStorage.setItem('besmart_products', JSON.stringify(products));
+      renderProducts();
+      document.getElementById('p-name').value = '';
+      document.getElementById('p-price').value = '';
+      document.getElementById('p-image').value = '';
+      alert('Product Add হয়েছে!');
+    }
+
+    function deleteProduct(id) {
+      if(confirm('Product Delete করবেন?')) {
+        products = products.filter(p => p.id !== id);
+        localStorage.setItem('besmart_products', JSON.stringify(products));
+        renderProducts();
+      }
+    }
+
+    function renderAdminList() {
+      const listDiv = document.getElementById('admin-product-list');
+      let html = '';
+      products.forEach(p => {
+        html += `<div style="display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #eee;">
+          <span>${p.name} - ₹${p.price}</span>
+          <button onclick="deleteProduct(${p.id})" style="background: #d32f2f; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">Delete</button>
+        </div>`;
+      });
+      listDiv.innerHTML = html;
+    }
 </script>
-
-
-
-    
