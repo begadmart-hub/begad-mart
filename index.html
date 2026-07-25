@@ -83,7 +83,18 @@
     
     <div class="grid" id="product-grid"></div>
   </div>
-
+<a href="#cart" style="margin: 0 18px; text-decoration: none; color: #ff6f00; font-weight: bold; font-size: 16px;">Cart 🛒 <span id="cart-count" style="background: #ff6f00; color: white; border-radius: 50%; padding: 2px 7px; font-size: 12px;">0</span></a>
+<!-- 3.5 CART SECTION -->
+<div id="cart" style="background: #fff3e0; padding: 50px 20px; min-height: 400px;">
+  <h1 style="text-align: center; color: #2e7d32;">আপনার কার্ট</h1>
+  <div id="cart-items" style="max-width: 800px; margin: 20px auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+    <p style="text-align: center; color: #0d47a1;">আপনার কার্ট খালি আছে</p>
+  </div>
+  <div id="cart-total" style="text-align: center; font-size: 22px; font-weight: bold; color: #ff6f00; margin-top: 20px;"></div>
+  <div style="text-align: center; margin-top: 20px;">
+    <button onclick="checkout()" style="padding: 15px 40px; background: #ff6f00; color: white; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer;">Order Confirm করুন</button>
+  </div>
+</div>
   <!-- 4. FOOTER - UPDATED -->
   <div id="contact" style="background: linear-gradient(135deg, #0d47a1 0%, #1565c0 100%); color: white; text-align: center; padding: 40px 20px; margin-top: 50px; position: relative; overflow: hidden;">
     <div style="position: absolute; top: 10px; left: 10%; font-size: 40px; opacity: 0.1;">🪷</div>
@@ -91,14 +102,13 @@
     <div style="position: relative; z-index: 2;">
       <h3 style="color: #ffcc80; font-size: 24px; margin: 0 0 10px 0;">BE S-MART</h3> <!-- হালকা কমলা -->
       <p style="font-size: 16px; margin: 5px 0;">প্রাকৃতিক ও ঘরোয়া পণ্যের বিশ্বস্ত ঠিকানা</p>
-      <p style="font-size: 16px; margin: 5px 0;">📍 যোগাযোগ: Rampurhat, West Bengal, India</p>
-      <p style="font-size: 16px; margin: 5px 0;">📞 +91 90000 00000</p>
+      <p style="font-size: 16px; margin: 5px 0;">📍 যোগাযোগ: Malda, West Bengal, India</p>
+      <p style="font-size: 16px; margin: 5px 0;">📞 +91 9382838584</p>
       <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.3); margin: 20px auto; width: 50%;">
       <p style="font-size: 14px; color: #ffcc80;">© 2026 BE S-MART. All Rights Reserved. | বিশ্বাস আর সেবাই আমাদের লক্ষ্য</p>
     </div>
   </div>
-
-  <script>
+<script>
     const products = [
       { id: 1, name: "Aamer Achar - Mango Pickle", price: 180, image: "https://via.placeholder.com/260x200/f8bbd0/0d47a1?text=Mango+Pickle" },
       { id: 2, name: "Aamer Jam - Mango Jam", price: 220, image: "https://via.placeholder.com/260x200/f8bbd0/0d47a1?text=Mango+Jam" },
@@ -121,8 +131,65 @@
           <img src="${p.image}" alt="${p.name}">
           <h3>${p.name}</h3>
           <p class="price">₹${p.price}</p>
-          <button class="btn">Add to Cart</button>
+          <button class="btn" onclick="addToCart(${p.id}, '${p.name}', ${p.price})">Add to Cart</button>
         </div>
       `;
     });
-  </script>
+
+    let cart = [];
+
+    function addToCart(id, name, price) {
+      const existing = cart.find(item => item.id === id);
+      if(existing) {
+        existing.qty += 1;
+      } else {
+        cart.push({id, name, price, qty: 1});
+      }
+      updateCartCount();
+      alert(name + " কার্টে যোগ হয়েছে!");
+    }
+
+    function updateCartCount() {
+      let total = cart.reduce((sum, item) => sum + item.qty, 0);
+      document.getElementById('cart-count').innerText = total;
+    }
+
+    function showCart() {
+      const cartDiv = document.getElementById('cart-items');
+      const totalDiv = document.getElementById('cart-total');
+      
+      if(cart.length === 0) {
+        cartDiv.innerHTML = '<p style="text-align: center; color: #0d47a1;">আপনার কার্ট খালি আছে</p>';
+        totalDiv.innerHTML = '';
+        return;
+      }
+      
+      let html = '';
+      let total = 0;
+      cart.forEach(item => {
+        total += item.price * item.qty;
+        html += `
+          <div style="display: flex; justify-content: space-between; padding: 15px; border-bottom: 1px solid #f8bbd0;">
+            <span style="color: #0d47a1; font-weight: bold;">${item.name} x ${item.qty}</span>
+            <span style="color: #ff6f00; font-weight: bold;">₹${item.price * item.qty}</span>
+          </div>
+        `;
+      });
+      cartDiv.innerHTML = html;
+      totalDiv.innerHTML = 'মোট: ₹' + total;
+    }
+
+    function checkout() {
+      if(cart.length === 0) { alert('আপনার কার্ট খালি!'); return; }
+      alert('ধন্যবাদ! আপনার অর্ডার নেওয়া হয়েছে। আমরা শীঘ্রই যোগাযোগ করবো।');
+      cart = [];
+      updateCartCount();
+      showCart();
+    }
+
+    document.querySelector('a[href="#cart"]').addEventListener('click', showCart);
+</script>
+
+
+
+    
